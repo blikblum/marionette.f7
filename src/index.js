@@ -1,41 +1,56 @@
-import PageStack from './pageStack'
-
-const pageStackMap = {}
+const f7ViewMap = Object.create(null)
 let f7App
 
 export function configureApp ({app, views = {}}) {
   f7App = app
   views.main = '.view-main'
   Object.keys(views).forEach((viewName) => {
-    let f7View = app.addView(views[viewName], {
+    f7ViewMap[viewName] = app.addView(views[viewName], {
       name: viewName,
       domCache: true
     })
-    pageStackMap[viewName] = new PageStack(f7View)
   })
 }
 
-function getStack (target) {
+function getF7View (target) {
   if (!target) {
     target = f7App.getCurrentView(0).params.name
   }
-  return pageStackMap[target]
+  return f7ViewMap[target]
 }
 
 export function pushPage (view, target) {
-  let stack = getStack(target)
-  stack.push(view)
+  let f7View = getF7View(target)
+  if (!view.isRendered()) {
+    view.render()
+  }
+  view.triggerMethod('before:attach', view)
+  f7View.router.load({
+    pageElement: view.el,
+    context: {
+      view
+    }
+  })
 }
 
 export function popPage (target) {
-  let stack = getStack(target)
-  stack.pop()
+  let f7View = getF7View(target)
+  f7View.router.back()
 }
 
-Dom7(document).on('page:afterback', function (e) {
+Dom7(document).on('page:beforeinit', function (e) {
   let context = e.detail.page.context
-  let stack = context && context.stack
-  if (stack) {
-    stack.remove(context.view)
+  let view = context && context.view
+  if (view) {
+    view._isAttached = true
+    view.triggerMethod('attach', view)
+  }
+})
+
+Dom7(document).on('page:beforeremove', function (e) {
+  let context = e.detail.page.context
+  let view = context && context.view
+  if (view) {
+    view.destroy()
   }
 })
