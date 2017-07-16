@@ -59,9 +59,24 @@ export function configureApp ({app, views = {}}) {
   }
 }
 
-export function pushPage (view, viewName, options) {
+function destroyPages (view) {
+  let $pages = Dom7(view.pagesContainer).children('.page')
+  $pages.each(function () {
+    let data = this.f7PageData
+    let mnView = data && data.context && data.context.__mn_view__
+    if (mnView) mnView.destroy()
+  })
+}
+
+export function pushPage (view, viewName, options = {}) {
   let f7ViewConfig = getF7ViewConfig(viewName)
   let f7View = f7ViewConfig.instance
+  let loadPopup = f7View.pagesContainer.children.length === 0 && f7ViewConfig.options.popup
+  let containerHTML
+  if (loadPopup) {
+    containerHTML = f7View.container.innerHTML
+    options.animatePages = false
+  }
   if (!view.isRendered()) {
     view.render()
   }
@@ -72,14 +87,19 @@ export function pushPage (view, viewName, options) {
     context: {__mn_view__: view}
   })
   )
-  if (f7View.pagesContainer.children.length === 1 && f7ViewConfig.options.popup) {
+  if (loadPopup) {
     let $popup = Dom7(f7View.container).closest('.popup')
-    let originalHTML = f7View.container.innerHTML
     $popup.once('popup:closed', function () {
-      while (f7View.activePage) {
-        f7View.router.back({animatePages: false})
-      }
-      f7View.container.innerHTML = originalHTML
+      destroyPages(f7View)
+      // manually reset the view using brute force
+      let viewName = f7View.params.name
+      f7View.container.innerHTML = containerHTML
+      f7View.destroy()
+      f7ViewConfig.instance = f7App.addView(f7ViewConfig.options.el, {
+        name: viewName,
+        dynamicNavbar: true,
+        domCache: true
+      })
     })
     f7App.popup($popup)
   }
