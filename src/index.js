@@ -60,7 +60,8 @@ export function configureApp ({app, views = {}}) {
 }
 
 export function pushPage (view, viewName, options) {
-  let f7View = getF7ViewConfig(viewName).instance
+  let f7ViewConfig = getF7ViewConfig(viewName)
+  let f7View = f7ViewConfig.instance
   if (!view.isRendered()) {
     view.render()
   }
@@ -70,11 +71,37 @@ export function pushPage (view, viewName, options) {
     context: {__mn_view__: view}
   })
   )
+  if (f7View.pagesContainer.children.length === 1 && f7ViewConfig.options.popup) {
+    let $popup = Dom7(f7View.container).closest('.popup')
+    let originalHTML = f7View.container.innerHTML
+    $popup.once('popup:closed', function () {
+      while (f7View.activePage) {
+        f7View.router.back({animatePages: false})
+      }
+      f7View.container.innerHTML = originalHTML
+    })
+    f7App.popup($popup)
+  }
 }
 
 export function popPage (viewName) {
   let f7View = getF7ViewConfig(viewName).instance
   f7View.router.back()
+}
+
+function popupCloseClick (e) {
+  e.preventDefault()
+  f7App.closeModal(this.el)
+}
+
+export function showPopup (view) {
+  if (!view.isRendered()) {
+    view.render()
+  }
+  let $el = Dom7(view.el)
+  $el.addClass('popup')
+  $el.once('popup:closed', view.destroy.bind(view))
+  f7App.popup(view.el, true)
 }
 
 function updateActiveView (view) {
