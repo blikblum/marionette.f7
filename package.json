@@ -49,5 +49,8 @@
     "prepublish": "npm run build",
     "publish:docs": "easystatic deploy docs --repo kriasoft/babel-starter-kit",
     "start": "easystatic start docs"
+  },
+  "dependencies": {
+    "underscore": "^1.8.3"
   }
 }

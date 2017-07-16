@@ -38,7 +38,8 @@ promise = promise.then(() => del(['dist/*']));
     sourceMap: true,
     moduleName: format === 'umd' ? 'Backbone.Marionette.F7' : undefined,
     globals: {
-      'backbone.marionette': 'Backbone.Marionette'
+      'backbone.marionette': 'Backbone.Marionette',
+      'underscore': '_'
     }
   })))
 })
