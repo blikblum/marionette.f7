@@ -66,6 +66,7 @@ export function pushPage (view, viewName, options) {
     view.render()
   }
   view.triggerMethod('before:attach', view)
+  view.el.dataset.page = _.uniqueId('mn-page-')
   f7View.router.load(Object.assign({}, options, {
     pageElement: view.el,
     context: {__mn_view__: view}
