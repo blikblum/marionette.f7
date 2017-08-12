@@ -30,6 +30,18 @@ Dom7(document).on('page:beforeremove', function (e) {
   }
 })
 
+Dom7(document).on('click', '.toolbar.tabbar a', function () {
+  let linkEl = this
+  let viewName = linkEl.dataset.view
+  if (viewName && !linkEl.classList.contains('active')) {
+    showView(viewName).then(function () {
+      let $tabbar = Dom7(linkEl).closest('.tabbar')
+      $tabbar.find('.tab-link.active').removeClass('active')
+      linkEl.classList.add('active')
+    })
+  }
+})
+
 export function createApp ({options = {}, views = {}}) {
   let toRender = []
   f7App = new Framework7(_.extend(options, {init: false}))
