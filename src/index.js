@@ -30,33 +30,36 @@ Dom7(document).on('page:beforeremove', function (e) {
   }
 })
 
-export function configureApp ({app, views = {}}) {
+export function createApp ({options = {}, views = {}}) {
   let toRender = []
-  f7App = app
+  f7App = new Framework7(_.extend(options, {init: false}))
   if (!views.main) views.main = '.view-main'
   Object.keys(views).forEach((viewName) => {
-    let options = views[viewName]
-    if (typeof options === 'string') options = {el: options}
-    let f7View = app.addView(options.el, {
+    let viewOptions = views[viewName]
+    if (typeof viewOptions === 'string') viewOptions = {el: viewOptions}
+    let f7View = f7App.addView(viewOptions.el, {
       name: viewName,
       dynamicNavbar: true,
       domCache: true
     })
     f7ViewMap[viewName] = {
       instance: f7View,
-      options: options
+      options: viewOptions
     }
-    if (options.preRender && options.rootPage) {
-      toRender.push(_.result(options, 'rootPage'))
+    if (viewOptions.preRender && viewOptions.rootPage) {
+      toRender.push(_.result(viewOptions, 'rootPage'))
     }
   })
-  if (toRender.length) {
-    Promise.all(toRender).then(function (views) {
-      views.forEach(function (view) {
-        view.render()
-      })
+
+  return Promise.all(toRender).then(function (views) {
+    views.forEach(function (view) {
+      view.render()
     })
-  }
+  }).then(function () {
+    // after all pre-rendering is done, init the f7 app
+    f7App.init()
+    return f7App
+  })
 }
 
 function destroyPages (view) {
