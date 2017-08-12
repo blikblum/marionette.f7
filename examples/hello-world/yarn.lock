@@ -589,9 +589,9 @@ babylon@^6.17.2:
   version "6.17.4"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.17.4.tgz#3e8b7402b88d22c3423e137a1577883b15ff869a"
 
-backbone.marionette@^3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/backbone.marionette/-/backbone.marionette-3.3.1.tgz#e6b44812a513cd35410b37a73d46423f6b8c57c8"
+backbone.marionette@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/backbone.marionette/-/backbone.marionette-3.4.1.tgz#a148bfe24223fea4aa2018a1637f2acc8dda10cf"
   dependencies:
     backbone.radio "^2.0.0"
 
@@ -2102,9 +2102,11 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
 
-marionette.f7@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/marionette.f7/-/marionette.f7-0.1.1.tgz#b0ccbb4b936298edc0b9362ea816ed662e9aa642"
+marionette.f7@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/marionette.f7/-/marionette.f7-0.4.0.tgz#f349e19dbc14184201240f94ec2c6027677048b1"
+  dependencies:
+    underscore "^1.8.3"
 
 marionette.renderers@^0.4.0:
   version "0.4.0"
