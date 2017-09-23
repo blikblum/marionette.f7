@@ -45,5 +45,8 @@ module.exports = {
       template: path.resolve(__dirname, 'src/index.html')
     })
   ],
+  resolve: {
+    modules: [path.join(__dirname, 'node_modules')]
+  },
   devtool: 'source-map'
 }
