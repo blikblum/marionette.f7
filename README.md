@@ -1,42 +1,70 @@
 # marionette.f7
 
-[![NPM version](http://img.shields.io/npm/v/generator-javascript.svg?style=flat-square)](https://www.npmjs.com/package/generator-javascript)
-[![NPM downloads](http://img.shields.io/npm/dm/generator-javascript.svg?style=flat-square)](https://www.npmjs.com/package/generator-javascript)
-[![Coverage Status](https://img.shields.io/coveralls/kriasoft/babel-starter-kit.svg?style=flat-square)](https://coveralls.io/github/kriasoft/babel-starter-kit)
-[![Dependency Status](http://img.shields.io/david/dev/kriasoft/babel-starter-kit.svg?style=flat-square)](https://david-dm.org/kriasoft/babel-starter-kit#info=devDependencies)
+[![NPM version](http://img.shields.io/npm/v/generator-javascript.svg?style=flat-square)](https://www.npmjs.com/package/marionette.f7)
+[![NPM downloads](http://img.shields.io/npm/dm/generator-javascript.svg?style=flat-square)](https://www.npmjs.com/package/marionette.f7)
+[![Dependency Status](http://img.shields.io/david/dev/blikblum/marionette.f7.svg?style=flat-square)](https://david-dm.org/blikblum/marionette.f7#info=devDependencies)
 
 > Marionette.js integration with Framework7
 
 
 ### Features
 
-&nbsp; &nbsp; ✓ Author your code, including tests, in [ES2015](https://babeljs.io/docs/learn-es2015/)+ via [Babel](http://babeljs.io/)<br>
-&nbsp; &nbsp; ✓ Publish as CommonJS, ES2015 and UMD via [Rollup](http://rollupjs.org/)<br>
-&nbsp; &nbsp; ✓ Pre-configured unit tests with [Mocha](http://mochajs.org/), [Chai](http://chaijs.com/) and [Sinon](http://sinonjs.org/)<br>
-&nbsp; &nbsp; ✓ Pre-configured test coverage with [Istanbul](https://github.com/gotwarlost/istanbul) and [Coveralls](https://coveralls.io/)<br>
-&nbsp; &nbsp; ✓ Generate a homepage for your project with [Easystatic](https://easystatic.com) ([demo](http://www.kriasoft.com/babel-starter-kit/))<br>
-&nbsp; &nbsp; ✓ [Yeoman](http://yeoman.io/) generator ([generator-javascript](https://github.com/kriasoft/babel-starter-kit/tree/yeoman-generator))<br>
-&nbsp; &nbsp; ✓ Cross-platform, minimum dependencies<br>
-&nbsp; &nbsp; ✓ 24/7 community support on [Gitter](https://gitter.im/kriasoft/babel-starter-kit)<br>
+&nbsp; &nbsp; ✓ Small, no need for intermediary layer, use Framework7 as is<br>
+&nbsp; &nbsp; ✓ Configure Framework7 views (page stacks)<br>
+&nbsp; &nbsp; ✓ Manipulate page stacks (push page, switch active one)<br>
 
 
-### Documentation
+### Usage
 
-* [Getting Started](docs/getting-started.md)
-* [Recipes](docs/recipes)
-  * [Testing with <code>mocha</code> and <code>jsdom</code>](docs/recipes/testing-with-mocha-and-jsdom.md)
-  * [Throwing errors with FB's <code>invariant</code> library](docs/recipes/throwing-errors-with-fbjs-invariant.md)
+#### <code>createApp(args) [-> Promise]</code>
 
-See also [www.kriasoft.com/babel-starter-kit](https://www.kriasoft.com/babel-starter-kit/)
+Creates a Framework7 application instance. The `args` is a hash accepting the following keys:
+
+`options`: a hash with the [application options](https://framework7.io/docs/init-app.html)
+
+`views`: a hash with the views* configuration where the key is the view name and the
+value hold the view options:
+ 
+ * `el`: the selector for the view element
+ * `rootPage`: a Marionette view instance. It can be defined as a function or a promise
+ * `preRender`: a boolean value to determine with the root page must be pre rendered
+ * `popup`: a boolean value to determine if the view should be show in a popup
+ 
+
+> \* In Framework7 parlance, view is a ”separate visual part of app with its own settings, navigation and history” which can contains one or more pages. Not to confuse with Marionette.js View. 
 
 
-### Related Projects
+#### <code>pushPage(mnView [, f7ViewName])</code>
 
-* [React Starter Kit](https://github.com/kriasoft/react-starter-kit) — Isomorphic web app boilerplate (Node.js/Express, React.js, GraphQL)
-* [React Static Boilerplate](https://github.com/koistya/react-static-boilerplate) — Generate static websites from React components with Webpack
-* [Universal Router](https://github.com/kriasoft/universal-router) — Isomorphic router for web and single-page applications (SPA)
-* [Membership Database](https://github.com/membership/membership.db) — SQL database boilerplate for web app users, roles and auth tokens
+Pushes a page into the page stack. 
+`mnView` should be a Marionette view instance and `f7ViewName` the Framework7
+ view name where the page should be pushed unto. If `f7ViewName` is omitted the 
+ page is pushed into the active Framework7 view
+ 
+#### <code>popPage([f7ViewName])</code>
+ 
+ Pops a page from the page stack. 
+ 
+ `f7ViewName` should be the Framework7 view name where the page should be popped. If `f7ViewName`
+  is omitted the page is popped from the active Framework7 view
+  
+#### <code>showView(f7ViewName)</code>
+ 
+ Shows a Framework7 view. 
+ 
+ `f7ViewName` should be the Framework7 view name that must be show / activated. 
+ If is already active nothing is done.
+   
+#### <code>showPopup(mnView)</code>
+ 
+ Shows a Marionette view as a standalone popup. 
+ 
+ `mnView` should be a Marionette view instance
+ 
+### Examples
 
+See examples [folder](https://github.com/blikblum/marionette.f7/tree/master/examples)
+ and [live demo](https://blikblum.github.io/marionette.f7/examples/tab-bar/dist/).
 
 
 ### License
