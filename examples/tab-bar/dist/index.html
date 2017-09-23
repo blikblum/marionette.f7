@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Marionette Application</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="styles.css" rel="stylesheet"></head>
+
+<body>
+
+<div class="views">
+  <div class="view tab view-main active" id="main-tab">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="left"></div>
+        <div class="center sliding">Hello</div>
+        <div class="right"></div>
+      </div>
+    </div>
+
+    <div class="pages navbar-through">
+      <div class="page" id="home"></div>
+    </div>
+  </div>
+
+  <div class="view tab view-tab2" id="tab2">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="left"></div>
+        <div class="center sliding">Tab 2</div>
+        <div class="right"></div>
+      </div>
+    </div>
+
+    <div class="pages navbar-through"></div>
+  </div>
+
+  <div class="toolbar tabbar">
+    <div class="toolbar-inner">
+      <a data-view="main" class="tab-link active">
+        <span class="tabbar-label">Home</span>
+      </a>
+      <a data-view="secondtab" class="tab-link">
+        <span class="tabbar-label">Tab 2</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="popup" id="popup-login">
+  <div class="view view-login">
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="center">Login</div>
+        <div class="right">
+          <a href="#" class="link close-popup">
+            <span>Close</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="pages navbar-through"></div>
+  </div>
+</div>
+
+<script type="text/javascript" src="bundle.js"></script></body>
+</html>
