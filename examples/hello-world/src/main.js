@@ -8,13 +8,13 @@ createApp({
   options: {
     material: true
   }
-})
-
-let pageView = new PageView({
-  model: new Backbone.Model({
-    level: 0,
-    message: 'Hello World!'
+}).then(function () {
+  const pageView = new PageView({
+    model: new Backbone.Model({
+      level: 0,
+      message: 'Hello World!'
+    })
   })
-})
 
-pushPage(pageView)
+  pushPage(pageView)
+})
