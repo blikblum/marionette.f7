@@ -36,9 +36,9 @@ promise = promise.then(() => del(['dist/*']));
     dest: `dist/${format === 'umd' ? 'index' : 'index.esm'}.js`,
     format,
     sourceMap: true,
-    moduleName: format === 'umd' ? 'Backbone.Marionette.F7' : undefined,
+    moduleName: format === 'umd' ? 'Marionette.F7' : undefined,
     globals: {
-      'backbone.marionette': 'Backbone.Marionette',
+      'backbone.marionette': 'Marionette',
       'underscore': '_'
     }
   })))
