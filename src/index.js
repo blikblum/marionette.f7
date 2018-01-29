@@ -88,22 +88,21 @@ function destroyPages (view) {
 }
 
 export function pushPage (view, viewName, options = {}) {
-  let f7ViewConfig = getF7ViewConfig(viewName)
-  let f7View = f7ViewConfig.instance
-  let loadPopup = f7ViewConfig.options.popup && !getF7ViewPages(f7View).length
+  const f7ViewConfig = getF7ViewConfig(viewName)
+  const f7View = f7ViewConfig.instance
+  const loadPopup = f7ViewConfig.options.popup && !getF7ViewPages(f7View).length
   let containerHTML
+  options = Object.assign({}, options, {route: {route: {__mn_view__: view}}})
   if (loadPopup) {
     containerHTML = f7View.el.innerHTML
-    options.animatePages = false
+    options.animate = false
   }
   if (!view.isRendered()) {
     view.render()
   }
   view.triggerMethod('before:attach', view)
   view.el.dataset.name = _.uniqueId('mn-page-')
-  f7View.router.load(Object.assign({}, options, {el: view.el}),
-    {route: {route: {__mn_view__: view}}}
-  )
+  f7View.router.load({el: view.el}, options)
   if (loadPopup) {
     let $popup = Dom7(f7View.el).closest('.popup')
     $popup.once('popup:closed', function () {
