@@ -7093,14 +7093,15 @@ function pushPage(view, viewName) {
   var containerHTML = void 0;
   if (loadPopup) {
     containerHTML = f7View.el.innerHTML;
-    options.animatePages = false;
+    options.animate = false;
   }
   if (!view.isRendered()) {
     view.render();
   }
   view.triggerMethod('before:attach', view);
   view.el.dataset.name = __WEBPACK_IMPORTED_MODULE_0_underscore___default.a.uniqueId('mn-page-');
-  f7View.router.load(Object.assign({}, options, { el: view.el }), { route: { route: { __mn_view__: view } } });
+  options = Object.assign({}, options, { route: { route: { __mn_view__: view } } });
+  f7View.router.load({ el: view.el }, options);
   if (loadPopup) {
     var $popup = Object(__WEBPACK_IMPORTED_MODULE_1_framework7__["a" /* Dom7 */])(f7View.el).closest('.popup');
     $popup.once('popup:closed', function () {
