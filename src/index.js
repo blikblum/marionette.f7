@@ -38,11 +38,11 @@ Dom7(document).on('page:beforeremove', function (e) {
 Dom7(document).on('click', '.toolbar.tabbar a', function () {
   let linkEl = this
   let viewName = linkEl.dataset.view
-  if (viewName && !linkEl.classList.contains('active')) {
+  if (viewName && !linkEl.classList.contains('tab-link-active')) {
     showView(viewName).then(function () {
       let $tabbar = Dom7(linkEl).closest('.tabbar')
-      $tabbar.find('.tab-link.active').removeClass('active')
-      linkEl.classList.add('active')
+      $tabbar.find('.tab-link.tab-link-active').removeClass('tab-link-active')
+      linkEl.classList.add('tab-link-active')
     })
   }
 })
@@ -100,7 +100,7 @@ export function pushPage (view, viewName, options = {}) {
     view.render()
   }
   view.triggerMethod('before:attach', view)
-  view.el.dataset.page = _.uniqueId('mn-page-')
+  view.el.dataset.name = _.uniqueId('mn-page-')
   f7View.router.load(Object.assign({}, options, {el: view.el}),
     {route: {route: {__mn_view__: view}}}
   )
@@ -117,7 +117,7 @@ export function pushPage (view, viewName, options = {}) {
         stackPages: true
       })
     })
-    f7App.popup($popup)
+    f7App.popup.open($popup)
   }
 }
 
@@ -133,7 +133,7 @@ export function showPopup (view) {
   let $el = Dom7(view.el)
   $el.addClass('popup')
   $el.once('popup:closed', view.destroy.bind(view))
-  f7App.popup(view.el, true)
+  f7App.popup.open(view.el, true)
 }
 
 function updateActiveView (view) {
