@@ -4,6 +4,7 @@ import template from './template.html'
 import SingleView from '../single/view'
 import PopupView from '../popup/view'
 import LoginView from '../login/view'
+import {Template7} from 'framework7'
 
 export default View.extend({
   template: Template7.compile(template),

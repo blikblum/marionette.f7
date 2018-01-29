@@ -8,9 +8,9 @@
   },
   "dependencies": {
     "backbone": "^1.3.3",
-    "backbone.marionette": "^3.4.3",
+    "backbone.marionette": "^3.5.1",
     "backbone.radio": "^2.0.0",
-    "framework7": "*",
+    "framework7": "2.0.7",
     "jquery": "^3.2.1",
     "marionette.f7": "^0.4.0",
     "marionette.renderers": "^0.4.0",

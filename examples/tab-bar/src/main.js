@@ -1,12 +1,11 @@
 import './setup'
-import 'framework7'
-import {createApp, showView} from 'marionette.f7'
+import {createApp} from 'marionette.f7'
 import HomeView from './home/view'
 import Tab2View from './tab2/view'
 
 createApp({
   options: {
-    material: false
+    theme: 'ios'
   },
 
   views: {
