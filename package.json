@@ -12,6 +12,7 @@
   "keywords": [],
   "main": "index.js",
   "module": "index.esm.js",
+  "jsnext:main": "index.esm.js",
   "babel": {
     "presets": [
       "latest"
