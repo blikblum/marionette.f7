@@ -20,32 +20,34 @@ function getMnViewFromEvent (event) {
   return f7Route && f7Route.route && f7Route.route.__mn_view__
 }
 
-Dom7(document).on('page:beforeinit', function (e) {
-  const view = getMnViewFromEvent(e)
-  if (view) {
-    view._isAttached = true
-    view.triggerMethod('attach', view)
-  }
-})
+function registerEvents () {
+  Dom7(document).on('page:beforeinit', function (e) {
+    const view = getMnViewFromEvent(e)
+    if (view) {
+      view._isAttached = true
+      view.triggerMethod('attach', view)
+    }
+  })
 
-Dom7(document).on('page:beforeremove', function (e) {
-  let view = getMnViewFromEvent(e)
-  if (view) {
-    view.destroy()
-  }
-})
+  Dom7(document).on('page:beforeremove', function (e) {
+    let view = getMnViewFromEvent(e)
+    if (view) {
+      view.destroy()
+    }
+  })
 
-Dom7(document).on('click', '.toolbar.tabbar a', function () {
-  let linkEl = this
-  let viewName = linkEl.dataset.view
-  if (viewName && !linkEl.classList.contains('tab-link-active')) {
-    showView(viewName).then(function () {
-      let $tabbar = Dom7(linkEl).closest('.tabbar')
-      $tabbar.find('.tab-link.tab-link-active').removeClass('tab-link-active')
-      linkEl.classList.add('tab-link-active')
-    })
-  }
-})
+  Dom7(document).on('click', '.toolbar.tabbar a', function () {
+    let linkEl = this
+    let viewName = linkEl.dataset.view
+    if (viewName && !linkEl.classList.contains('tab-link-active')) {
+      showView(viewName).then(function () {
+        let $tabbar = Dom7(linkEl).closest('.tabbar')
+        $tabbar.find('.tab-link.tab-link-active').removeClass('tab-link-active')
+        linkEl.classList.add('tab-link-active')
+      })
+    }
+  })
+}
 
 export function createApp ({options = {}, views = {}}) {
   let toRender = []
@@ -66,6 +68,8 @@ export function createApp ({options = {}, views = {}}) {
       toRender.push(_.result(viewOptions, 'rootPage'))
     }
   })
+
+  registerEvents()
 
   return Promise.all(toRender).then(function (views) {
     views.forEach(function (view) {
