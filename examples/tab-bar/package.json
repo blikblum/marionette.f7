@@ -11,23 +11,22 @@
     "backbone.marionette": "^3.5.1",
     "backbone.radio": "^2.0.0",
     "framework7": "2.0.7",
-    "jquery": "^3.2.1",
-    "marionette.f7": "^0.4.0",
-    "marionette.renderers": "^0.4.0",
+    "jquery": "^3.3.1",
+    "marionette.f7": "^1.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-es2015": "^6.24.1",
-    "css-loader": "^0.28.7",
-    "extract-text-webpack-plugin": "^3.0.0",
-    "file-loader": "^0.11.1",
-    "html-loader": "^0.5.1",
+    "css-loader": "^0.28.9",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.6",
+    "html-loader": "^0.5.5",
     "html-webpack-plugin": "^2.30.1",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.7.2",
     "sass-loader": "^6.0.5",
-    "style-loader": "^0.18.1",
-    "webpack": "^3.6.0"
+    "style-loader": "^0.20.1",
+    "webpack": "^3.10.0"
   }
 }
