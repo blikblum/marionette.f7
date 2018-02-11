@@ -11,8 +11,12 @@ module.exports = {
   module: {
     rules: [{
       test: /\.js$/,
-      exclude: [/node_modules/],
-      include: [/node_modules\/framework7/],
+      include: [
+        path.resolve(__dirname, 'src'),
+        path.resolve(__dirname, 'node_modules/dom7'),
+        path.resolve(__dirname, 'node_modules/template7'),
+        path.resolve(__dirname, 'node_modules/framework7')
+      ],
       use: [{
         loader: 'babel-loader',
         options: {
