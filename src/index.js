@@ -1,5 +1,8 @@
 import _ from 'underscore'
 import Framework7, {Dom7} from 'framework7'
+import {View} from 'backbone.marionette'
+import Route from './route'
+import {mnRouteMap, viewRoutesMap} from './globals'
 
 const f7ViewMap = Object.create(null)
 let f7App
@@ -159,4 +162,90 @@ export function showView (viewName) {
     updateActiveView(view)
     return Promise.resolve()
   }
+}
+
+function resolveComponent (RouteClass, to, from, resolve, reject) {
+  let viewRoutes
+  const transition = {
+    to,
+    from,
+    cancel () {
+      this.isCancelled = true
+    }
+  }
+  const previousMnRoute = mnRouteMap.get(from)
+  if (previousMnRoute) {
+    previousMnRoute.deactivate(transition)
+    if (transition.isCancelled) {
+      reject()
+      return
+    }
+  }
+  const mnRoute = new RouteClass(RouteClass.options || {})
+  mnRoute.$router = this.view.router
+  Promise.resolve(mnRoute.activate(transition))
+    .then(function () {
+      if (transition.isCancelled) {
+        reject()
+      } else {
+        mnRouteMap.set(to, mnRoute)
+        viewRoutes = viewRoutesMap.get(mnRoute.$router)
+        if (viewRoutes) {
+          viewRoutes = []
+          viewRoutesMap.set(mnRoute.$router, viewRoutes)
+        }
+        viewRoutes.push(mnRoute)
+        resolve({component: {
+          $mnRoute: mnRoute,
+          beforeCreate () {
+            console.log('beforeCreate', this.$route.params.level)
+          },
+          created () {
+            console.log('created', this.$route.params.level)
+          },
+          beforeMount () {
+            console.log('beforeMount', this.$route.params.level)
+          },
+          mounted () {
+            console.log('mounted', this.$route.params.level)
+          },
+          beforeDestroy () {
+            console.log('beforeDestroy', this.$route.params.level)
+          },
+          destroyed () {
+            console.log('destroyed', this.$route.params.level)
+            const activeRoutes = viewRoutesMap.get(mnRoute.$router)
+            if (activeRoutes) {
+              const routeIndex = activeRoutes.indexOf(mnRoute)
+              if (routeIndex !== -1) activeRoutes.splice(routeIndex, 1)
+            }
+            this.$mnRoute.destroy()
+          },
+          render () {
+            console.log('render', this.$route.params.level)
+            this.$mnRoute.renderView(transition)
+            return this.$mnRoute.view.el
+          }
+        }
+        })
+      }
+    })
+    .catch(function () {
+      reject()
+    })
+}
+
+export function asyncRoute (routeConfig) {
+  if (!(routeConfig.prototype instanceof Route)) {
+    if (routeConfig.prototype instanceof View) {
+      routeConfig = Route.extend({
+        viewClass: routeConfig
+      })
+    } else {
+      routeConfig = Route.extend({}, {
+        options: routeConfig
+      })
+    }
+  }
+  return resolveComponent.bind(this, routeConfig)
 }
