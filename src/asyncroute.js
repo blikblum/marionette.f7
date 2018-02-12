@@ -2,6 +2,36 @@ import {mnRouteMap, routerChannel, viewRoutesMap} from './globals'
 import {View} from 'backbone.marionette'
 import Route from './route'
 
+function createComponent (router, mnRoute, transition) {
+  return {
+    beforeMount () {
+      const view = mnRoute.view
+      if (view) view.triggerMethod('before:attach', view)
+    },
+    mounted () {
+      const view = mnRoute.view
+      if (view) view.triggerMethod('attach', view)
+    },
+    destroyed () {
+      const view = mnRoute.view
+      if (view) view.triggerMethod('before:detach', view)
+      router.once('routeChanged', function () {
+        if (view) view.triggerMethod('detach', view)
+        mnRoute.destroy()
+      })
+      const activeRoutes = viewRoutesMap.get(router)
+      if (activeRoutes) {
+        const routeIndex = activeRoutes.indexOf(mnRoute)
+        if (routeIndex !== -1) activeRoutes.splice(routeIndex, 1)
+      }
+    },
+    render () {
+      mnRoute.renderView(transition)
+      return mnRoute.view.el
+    }
+  }
+}
+
 function resolveComponent (router, RouteClass, to, from, resolve, reject) {
   let viewRoutes
   const transition = {
@@ -41,46 +71,13 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
           return
         }
         mnRouteMap.set(to, mnRoute)
-        viewRoutes = viewRoutesMap.get(mnRoute.$router)
+        viewRoutes = viewRoutesMap.get(router)
         if (!viewRoutes) {
           viewRoutes = []
-          viewRoutesMap.set(mnRoute.$router, viewRoutes)
+          viewRoutesMap.set(router, viewRoutes)
         }
         viewRoutes.push(mnRoute)
-        resolve({component: {
-          $mnRoute: mnRoute,
-          beforeMount () {
-            const view = this.$options.$mnRoute.view
-            if (view) view.triggerMethod('before:attach', view)
-          },
-          mounted () {
-            const view = this.$options.$mnRoute.view
-            if (view) view.triggerMethod('attach', view)
-          },
-          beforeDestroy () {
-            const view = this.$options.$mnRoute.view
-            if (view) view.triggerMethod('before:detach', view)
-          },
-          destroyed () {
-            const mnRoute = this.$options.$mnRoute
-            router.once('routeChanged', function () {
-              const view = mnRoute.view
-              if (view) view.triggerMethod('detach', view)
-              mnRoute.destroy()
-            })
-            const activeRoutes = viewRoutesMap.get(mnRoute.$router)
-            if (activeRoutes) {
-              const routeIndex = activeRoutes.indexOf(mnRoute)
-              if (routeIndex !== -1) activeRoutes.splice(routeIndex, 1)
-            }
-          },
-          render () {
-            const mnRoute = this.$options.$mnRoute
-            mnRoute.renderView(transition)
-            return mnRoute.view.el
-          }
-        }
-        })
+        resolve({component: createComponent(router, mnRoute, transition)})
         routerChannel.trigger('transition', transition)
       }
     })
