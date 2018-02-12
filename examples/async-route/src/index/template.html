@@ -1,0 +1,22 @@
+<div class="navbar">
+  <div class="navbar-inner">
+    {{#if level}}
+    <div class="left">
+      <a href="#" class="link icon-only back">
+        <i class="icon icon-back"></i>
+      </a>
+    </div>
+    {{/if}}
+    <div class="title">Page - Level {{level}}</div>
+  </div>
+</div>
+<div class="page-content">
+  <div class="block-title"> {{message}}</div>
+  <div class="list links-list">
+    <ul>
+      <li>
+        <a href="/my-page/level/{{nextLevel}}" class="next-link">Next Page</a>
+      </li>
+    </ul>
+  </div>
+</div>
