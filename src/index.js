@@ -164,7 +164,7 @@ export function showView (viewName) {
   }
 }
 
-function resolveComponent (RouteClass, to, from, resolve, reject) {
+function resolveComponent (router, RouteClass, to, from, resolve, reject) {
   let viewRoutes
   const transition = {
     to,
@@ -182,7 +182,7 @@ function resolveComponent (RouteClass, to, from, resolve, reject) {
     }
   }
   const mnRoute = new RouteClass(RouteClass.options || {})
-  mnRoute.$router = this.view.router
+  mnRoute.$router = router
   Promise.resolve(mnRoute.activate(transition))
     .then(function () {
       if (transition.isCancelled) {
@@ -190,7 +190,7 @@ function resolveComponent (RouteClass, to, from, resolve, reject) {
       } else {
         mnRouteMap.set(to, mnRoute)
         viewRoutes = viewRoutesMap.get(mnRoute.$router)
-        if (viewRoutes) {
+        if (!viewRoutes) {
           viewRoutes = []
           viewRoutesMap.set(mnRoute.$router, viewRoutes)
         }
@@ -214,17 +214,19 @@ function resolveComponent (RouteClass, to, from, resolve, reject) {
           },
           destroyed () {
             console.log('destroyed', this.$route.params.level)
+            const mnRoute = this.$options.$mnRoute
             const activeRoutes = viewRoutesMap.get(mnRoute.$router)
             if (activeRoutes) {
               const routeIndex = activeRoutes.indexOf(mnRoute)
               if (routeIndex !== -1) activeRoutes.splice(routeIndex, 1)
             }
-            this.$mnRoute.destroy()
+            mnRoute.destroy()
           },
           render () {
             console.log('render', this.$route.params.level)
-            this.$mnRoute.renderView(transition)
-            return this.$mnRoute.view.el
+            const mnRoute = this.$options.$mnRoute
+            mnRoute.renderView(transition)
+            return mnRoute.view.el
           }
         }
         })
@@ -247,5 +249,7 @@ export function asyncRoute (routeConfig) {
       })
     }
   }
-  return resolveComponent.bind(this, routeConfig)
+  return function (to, from, resolve, reject) {
+    return resolveComponent(this, routeConfig, to, from, resolve, reject)
+  }
 }
