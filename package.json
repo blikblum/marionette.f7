@@ -20,7 +20,9 @@
   },
   "sideEffects": false,
   "peerDependencies": {
-    "backbone.marionette": "^3.5.1"
+    "backbone.marionette": "^3.5.1",
+    "backbone.radio": "^2.0.0",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
@@ -40,7 +42,6 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "framework7": "^2.0.7",
-    "underscore": "^1.8.3"
+    "framework7": "^2.0.7"
   }
 }
