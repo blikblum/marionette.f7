@@ -38,12 +38,12 @@ export default MnObject.extend(
       if (this.viewEvents) {
         bindEvents(this, view, this.viewEvents)
       }
-      this.listenToOnce(view, 'destroy', function () {
+      this.on('destroy', function () {
         if (this.view) {
           this.view.destroy()
           this.view = void 0
         }
-      })
+      }, this)
       view.render()
       this.view = view
       // routerChannel.trigger('route:render', this)

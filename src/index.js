@@ -205,16 +205,24 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
           },
           beforeMount () {
             console.log('beforeMount', this.$route.params.level)
+            const view = this.$options.$mnRoute.view
+            if (view) view.triggerMethod('before:attach', view)
           },
           mounted () {
             console.log('mounted', this.$route.params.level)
+            const view = this.$options.$mnRoute.view
+            if (view) view.triggerMethod('attach', view)
           },
           beforeDestroy () {
             console.log('beforeDestroy', this.$route.params.level)
+            const view = this.$options.$mnRoute.view
+            if (view) view.triggerMethod('before:detach', view)
           },
           destroyed () {
             console.log('destroyed', this.$route.params.level)
             const mnRoute = this.$options.$mnRoute
+            const view = mnRoute.view
+            if (view) view.triggerMethod('detach', view)
             const activeRoutes = viewRoutesMap.get(mnRoute.$router)
             if (activeRoutes) {
               const routeIndex = activeRoutes.indexOf(mnRoute)
