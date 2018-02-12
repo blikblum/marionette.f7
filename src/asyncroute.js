@@ -44,6 +44,20 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
       this.isCancelled = true
       reject()
       router.navigate(...args)
+    },
+    showPreloader (delay = 0) {
+      if (!router.app.preloader || this.showingPreloader) return
+      this.showingPreloader = true
+      this.timeoutId = setTimeout(() => {
+        this.timeoutId = null
+        router.app.preloader.show()
+      }, delay)
+    },
+    hidePreloader () {
+      if (this.showingPreloader) {
+        router.app.preloader.hide()
+        if (this.timeoutId) clearTimeout(this.timeoutId)
+      }
     }
   }
   const previousMnRoute = mnRouteMap.get(from)
@@ -54,6 +68,7 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
       routerChannel.trigger('deactivate', transition, previousMnRoute)
     }
     if (transition.isCancelled) {
+      transition.hidePreloader()
       reject()
       return
     }
@@ -62,12 +77,14 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
   mnRoute.$router = router
   routerChannel.trigger('before:activate', transition, mnRoute)
   if (transition.isCancelled) {
+    transition.hidePreloader()
     mnRoute.destroy()
     reject()
     return
   }
   Promise.resolve(mnRoute.activate(transition))
     .then(function () {
+      transition.hidePreloader()
       if (transition.isCancelled) {
         mnRoute.destroy()
         reject()
@@ -90,6 +107,7 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
       }
     })
     .catch(function (err) {
+      transition.hidePreloader()
       routerChannel.trigger('transition:error', transition, err)
       mnRoute.destroy()
       reject()

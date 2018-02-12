@@ -8,6 +8,9 @@ export default Route.extend({
     if ((this.level % 2) !== 0) {
       transition.redirect(`/my-page/level/${this.level + 1}`)
     }
+    return new Promise((resolve) => {
+      setTimeout(resolve, this.level * 100)
+    })
   },
 
   viewOptions () {
