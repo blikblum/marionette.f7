@@ -2,7 +2,7 @@ import _ from 'underscore'
 import Framework7, {Dom7} from 'framework7'
 import {View} from 'backbone.marionette'
 import Route from './route'
-import {mnRouteMap, viewRoutesMap} from './globals'
+import {mnRouteMap, viewRoutesMap, routerChannel} from './globals'
 
 const f7ViewMap = Object.create(null)
 let f7App
@@ -175,7 +175,11 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
   }
   const previousMnRoute = mnRouteMap.get(from)
   if (previousMnRoute) {
-    previousMnRoute.deactivate(transition)
+    routerChannel.trigger('before:deactivate', transition, previousMnRoute)
+    if (!transition.isCancelled) {
+      previousMnRoute.deactivate(transition)
+      routerChannel.trigger('deactivate', transition, previousMnRoute)
+    }
     if (transition.isCancelled) {
       reject()
       return
@@ -183,11 +187,21 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
   }
   const mnRoute = new RouteClass(RouteClass.options || {})
   mnRoute.$router = router
+  routerChannel.trigger('before:activate', transition, mnRoute)
+  if (transition.isCancelled) {
+    reject()
+    return
+  }
   Promise.resolve(mnRoute.activate(transition))
     .then(function () {
       if (transition.isCancelled) {
         reject()
       } else {
+        routerChannel.trigger('activate', transition, mnRoute)
+        if (transition.isCancelled) {
+          reject()
+          return
+        }
         mnRouteMap.set(to, mnRoute)
         viewRoutes = viewRoutesMap.get(mnRoute.$router)
         if (!viewRoutes) {
@@ -197,29 +211,19 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
         viewRoutes.push(mnRoute)
         resolve({component: {
           $mnRoute: mnRoute,
-          beforeCreate () {
-            console.log('beforeCreate', this.$route.params.level)
-          },
-          created () {
-            console.log('created', this.$route.params.level)
-          },
           beforeMount () {
-            console.log('beforeMount', this.$route.params.level)
             const view = this.$options.$mnRoute.view
             if (view) view.triggerMethod('before:attach', view)
           },
           mounted () {
-            console.log('mounted', this.$route.params.level)
             const view = this.$options.$mnRoute.view
             if (view) view.triggerMethod('attach', view)
           },
           beforeDestroy () {
-            console.log('beforeDestroy', this.$route.params.level)
             const view = this.$options.$mnRoute.view
             if (view) view.triggerMethod('before:detach', view)
           },
           destroyed () {
-            console.log('destroyed', this.$route.params.level)
             const mnRoute = this.$options.$mnRoute
             const view = mnRoute.view
             if (view) view.triggerMethod('detach', view)
@@ -231,16 +235,17 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
             mnRoute.destroy()
           },
           render () {
-            console.log('render', this.$route.params.level)
             const mnRoute = this.$options.$mnRoute
             mnRoute.renderView(transition)
             return mnRoute.view.el
           }
         }
         })
+        routerChannel.trigger('transition', transition)
       }
     })
-    .catch(function () {
+    .catch(function (err) {
+      routerChannel.trigger('transition:error', transition, err)
       reject()
     })
 }
