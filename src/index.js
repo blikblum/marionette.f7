@@ -253,3 +253,5 @@ export function asyncRoute (routeConfig) {
     return resolveComponent(this, routeConfig, to, from, resolve, reject)
   }
 }
+
+export {Route}
