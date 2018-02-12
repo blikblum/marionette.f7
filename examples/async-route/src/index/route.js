@@ -5,6 +5,9 @@ import View from './view'
 export default Route.extend({
   activate (transition) {
     this.level = +transition.to.params.level
+    if ((this.level % 2) !== 0) {
+      transition.redirect(`/my-page/level/${this.level + 1}`)
+    }
   },
 
   viewOptions () {

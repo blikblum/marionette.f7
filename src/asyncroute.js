@@ -39,6 +39,11 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
     from,
     cancel () {
       this.isCancelled = true
+    },
+    redirect (...args) {
+      this.isCancelled = true
+      reject()
+      router.navigate(...args)
     }
   }
   const previousMnRoute = mnRouteMap.get(from)
@@ -57,16 +62,19 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
   mnRoute.$router = router
   routerChannel.trigger('before:activate', transition, mnRoute)
   if (transition.isCancelled) {
+    mnRoute.destroy()
     reject()
     return
   }
   Promise.resolve(mnRoute.activate(transition))
     .then(function () {
       if (transition.isCancelled) {
+        mnRoute.destroy()
         reject()
       } else {
         routerChannel.trigger('activate', transition, mnRoute)
         if (transition.isCancelled) {
+          mnRoute.destroy()
           reject()
           return
         }
@@ -83,6 +91,7 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
     })
     .catch(function (err) {
       routerChannel.trigger('transition:error', transition, err)
+      mnRoute.destroy()
       reject()
     })
 }
