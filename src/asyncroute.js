@@ -32,7 +32,7 @@ function createComponent (router, mnRoute, transition) {
   }
 }
 
-function resolveComponent (router, RouteClass, to, from, resolve, reject) {
+function resolveComponent (router, RouteClass, routeOptions, to, from, resolve, reject) {
   let viewRoutes
   const transition = {
     to,
@@ -73,7 +73,7 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
       return
     }
   }
-  const mnRoute = new RouteClass(RouteClass.options || {})
+  const mnRoute = new RouteClass(routeOptions)
   mnRoute.$router = router
   routerChannel.trigger('before:activate', transition, mnRoute)
   if (transition.isCancelled) {
@@ -115,18 +115,23 @@ function resolveComponent (router, RouteClass, to, from, resolve, reject) {
 }
 
 export default function asyncRoute (routeConfig) {
+  let RouteClass = routeConfig
+  let routeOptions = {}
+  if (!routeConfig) throw new Error('Invalid config passed to asyncRoute. Expected options hash, View or Route class')
   if (!(routeConfig.prototype instanceof Route)) {
     if (routeConfig.prototype instanceof View) {
-      routeConfig = Route.extend({
+      RouteClass = Route.extend({
         viewClass: routeConfig
       })
     } else {
-      routeConfig = Route.extend({}, {
-        options: routeConfig
-      })
+      routeOptions = routeConfig
+      RouteClass = routeConfig.routeClass
+      if (!RouteClass || !(RouteClass.prototype instanceof Route)) {
+        RouteClass = Route
+      }
     }
   }
   return function (to, from, resolve, reject) {
-    return resolveComponent(this, routeConfig, to, from, resolve, reject)
+    return resolveComponent(this, RouteClass, routeOptions, to, from, resolve, reject)
   }
 }
