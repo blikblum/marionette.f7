@@ -1,7 +1,7 @@
 {
   "private": false,
   "name": "marionette.f7",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Framework7 integration with Marionette",
   "repository": "blikblum/marionette.f7",
   "author": "Luiz Américo Pereira Câmara",
@@ -20,16 +20,13 @@
   },
   "sideEffects": false,
   "peerDependencies": {
-    "backbone.marionette": "^3.5.1",
     "backbone.radio": "^2.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
     "babel-core": "^6.17.0",
-    "babel-plugin-transform-runtime": "^6.15.0",
     "babel-preset-latest": "^6.16.0",
-    "backbone.marionette": "^3.5.1",
     "del": "^3.0.0",
     "rollup": "^0.43.0",
     "rollup-plugin-babel": "^2.6.1",
