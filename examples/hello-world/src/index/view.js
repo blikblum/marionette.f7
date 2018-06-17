@@ -1,8 +1,12 @@
 import Backbone from 'backbone'
-import {View, isNodeAttached} from 'backbone.marionette'
+import {View} from 'backbone.marionette'
 import {pushPage} from 'marionette.f7'
 import template from './template.html'
 import {Template7} from 'framework7'
+
+function isNodeAttached (el) {
+  return document.documentElement.contains(el)
+}
 
 let PageView = View.extend({
   className: 'page',

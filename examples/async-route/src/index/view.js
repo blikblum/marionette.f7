@@ -1,7 +1,10 @@
-import Backbone from 'backbone'
-import {View, isNodeAttached} from 'backbone.marionette'
+import {View, DomApi} from 'backbone.marionette'
 import template from './template.html'
 import {Template7} from 'framework7'
+
+function isNodeAttached (el) {
+  return DomApi.hasEl(document.documentElement, el)
+}
 
 let PageView = View.extend({
   className: 'page',

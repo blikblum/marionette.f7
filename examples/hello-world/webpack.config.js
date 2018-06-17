@@ -1,6 +1,6 @@
 var path = require('path')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var MiniCSSExtractPlugin = require('mini-css-extract-plugin')
 
 module.exports = {
   entry: './src/main.js',
@@ -23,18 +23,16 @@ module.exports = {
           presets: [['es2015', {modules: false}]]
         }
       }]
-    }, {
+    }, { 
       test: /\.css$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: 'css-loader'
-      })
-    }, {
+      use: [
+        MiniCSSExtractPlugin.loader,
+        'css-loader'
+      ]
+    }, 
+    { 
       test: /\.(sass|scss)$/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: ['css-loader', 'sass-loader']
-      })
+      use: [MiniCSSExtractPlugin.loader, 'css-loader', 'sass-loader']
     }, {
       test: /template\.html$/,
       use: ['html-loader']
@@ -44,7 +42,12 @@ module.exports = {
     }]
   },
   plugins: [
-    new ExtractTextPlugin('styles.css'),
+    new MiniCSSExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // both options are optional
+      filename: '[name].css',
+      chunkFilename: '[id].css'
+    }),
 
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'src/index.html')

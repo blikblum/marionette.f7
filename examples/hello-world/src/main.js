@@ -17,4 +17,4 @@ createApp({
   })
 
   pushPage(pageView)
-})
+}).catch(err => console.log('Error creating app:', err))
