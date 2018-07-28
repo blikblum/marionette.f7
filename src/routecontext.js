@@ -1,8 +1,14 @@
 import {viewRoutesMap} from './globals'
 
 function RouteContext (router, route) {
-  const routes = viewRoutesMap.get(router)
-  this.parentRoutes = routes ? routes.slice(0, routes.indexOf(route)) : []
+  let routes = viewRoutesMap.get(router)
+  if (routes) {
+    const routeIndex = routes.indexOf(route)
+    if (routeIndex !== -1) {
+      routes = routes.slice(0, routeIndex)
+    }
+  }
+  this.parentRoutes = routes || []
 }
 
 RouteContext.prototype.trigger = function () {
