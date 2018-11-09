@@ -7,10 +7,16 @@ export default Route.extend({
     this.level = +transition.to.params.level
     if ((this.level % 2) !== 0) {
       transition.redirect(`/my-page/level/${this.level + 1}`)
+      return
     }
+    console.log('activate', this.level)
     return new Promise((resolve) => {
       setTimeout(resolve, this.level * 100)
     })
+  },
+
+  deactivate () {
+    console.log('deactivate', this.level)
   },
 
   viewOptions () {
