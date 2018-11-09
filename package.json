@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "marionette.f7",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "Framework7 integration with Marionette",
   "repository": "blikblum/marionette.f7",
   "author": "Luiz Américo Pereira Câmara",
@@ -21,7 +21,7 @@
   "sideEffects": false,
   "peerDependencies": {
     "backbone.radio": "^2.0.0",
-    "framework7": "^2.0.7 | ^3.0.7",
+    "framework7": "^3.4.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
