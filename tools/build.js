@@ -24,7 +24,7 @@ promise = promise.then(() => del(['dist/*']));
       presets: pkg.babel.presets.map(x => (x === 'latest' ? ['latest', { es2015: { modules: false, loose: true } }] : x))
     }))]
   }).then(bundle => bundle.write({
-    dest: `dist/${format === 'umd' ? 'index' : 'index.esm'}.js`,
+    dest: `dist/${format === 'umd' ? 'marionette.f7' : 'marionette.f7.esm'}.js`,
     format,
     sourceMap: true,
     moduleName: format === 'umd' ? 'Marionette.F7' : undefined,
